@@ -1,0 +1,249 @@
+/**
+ *
+ * @author Ana Salazar
+ * This class has an inner class called Node, a private node instance, and a private int instance
+ * Its methods are: default constructor, copy constructor, two add methods, remove method,
+ * most expensive method, get length method, make copy method, make empty method,  
+ * and an override of the equals method from the object base class
+ * 
+ */
+public class PurchaseList {
+    /**
+     * The Node class contains a purchase instance and a next Node instance
+     * the next instance points to the next node in the list
+     */
+    class Node{
+        Purchase data;
+        Node next;
+    }
+    
+    //attributes
+    private Node head;
+    private int length;
+    
+    /**
+     * default constructor to set the head to null and length to 0
+     */
+    public PurchaseList(){
+        this.head = null;
+        this.length = 0;
+    }
+    
+    /**
+     * copy constructor makes a deep copy of the passed instance to the new PurchaseList
+     * instance
+     * @param other 
+     */
+    public PurchaseList(PurchaseList other){
+        System.out.println("Copy constructor called");//lets the user know that the copy constructor was called
+        Node curr = new Node();//creates and initialize a node
+        Node last = new Node();//creates and initialize a node
+        Node temp = new Node();//creates and initialize a node
+        curr = other.head;//sets curr to the other.head node
+        //will exit until curr node is null
+        while(curr != null){
+            //sets the first temp.data to a new Purchase with the values in other.head.data 
+            if(temp.data == null){
+                temp.data = new Purchase(curr.data.itemName, curr.data.quantity, curr.data.itemPrice);
+                last = temp;// past the temp reference to last
+            }
+            //if the first temp.data is not null 
+            else{
+                last.next = new Node();//initialize last.next node
+                last = last.next;//past last.next to last
+                //sets last.data to a new Purchase with the values in other.head.data
+                last.data = new Purchase(curr.data.itemName, curr.data.quantity, curr.data.itemPrice);
+                last.next = null;//sets last.next to null
+            }
+            curr = curr.next;//moves curr to the next node
+            length++;//increments the length
+        }
+        head = temp;//sets head to temp
+    }
+    
+    /**
+     * adds a purchase to the PurchaseList instance
+     * @param p 
+     */
+    public void add(Purchase p){
+        Node temp = new Node();//creates and initliaze a temporary node
+        temp.data = p;//sets temp.data to the passing purchase instance
+        temp.next = head; //sets temp.next to head
+        head = temp;//head is set to temp
+        length++;//increments length
+    }
+    
+    /**
+     * adds the values of the parameter to the PurchaseList instance (in no order)
+     * @param pl 
+     */
+    public void add(PurchaseList pl){
+        Node temp = new Node();//creates and initialize a node
+        Node curr = new Node();//creates and initialize a node
+        curr = pl.head;//sets curr to the parameter head
+        //will run until curr is not null
+        while(curr != null){
+            //if temp is not null it will copy to a new Purchase with the values in other.head.data
+            if(temp != null){
+                temp.data = new Purchase(curr.data.itemName, curr.data.quantity, curr.data.itemPrice);   
+            }
+            temp.next = head;//sets temp.next to head
+            head = temp;//head is set to temp 
+            temp = new Node();//temp is initialize (temp.data == null)
+            curr = curr.next;//moves curr to the next node
+            length++;//increments value
+        }
+    }
+    
+    /**
+     * removes the purchase with the parameter name from the Purchase list
+     * @param itemName
+     * @return 
+     */
+    public Purchase remove(String itemName){
+        Node location = new Node();//creates and initialize a node
+        location = head;//location is set to head
+        //if the first purchase in the purchase list is the item name
+        if(location.data.itemName == itemName){
+            head = head.next;//head is set to head.next
+            length--;//length is decrement
+        }
+        //if the first purchase in the purchase list is not the item name
+        if(location.data.itemName != itemName){
+            //will run until location.next is null and item name is not the same as the one at location.next
+            while((location.next != null) && (itemName != (location.next).data.itemName)){
+                location = location.next;//moves location to the next node
+            }
+            //if location.next is null it will get out and print that the item is not in the list
+            if(location.next == null){
+                System.out.println("Item is not in the list");
+            }
+            //if location.next is not null
+            if(location.next != null){
+                Node tempLocation = location.next;//a new node is set to location.next node
+                location.next = (location.next).next;//location.next is set to next node in location.next
+                length--;//the lenght is decrement
+            }
+        }
+        return head.data;//returns the data in the head
+    }
+    
+    /**
+     * returns the most expensive purchase
+     * @return 
+     */
+    public Purchase mostExpensivePurchase(){
+        Node temp = new Node();//creates and initialize a node
+        temp = head; //temp is set to head
+        double max;//double instance
+        Node maxPurchase = new Node();//creates and initialize a node
+        //if temp is null it will return null
+        if(temp == null){
+            return null;
+        }
+        else{
+            max = temp.data.cost();//max is set to the cost of the temp.data
+            //it will run until temp is null
+            while(temp != null){
+                //if max is less than the cost of temp.data
+                if(max < temp.data.cost()){
+                        max = temp.data.cost();//max is set to the cost of temp.data
+                        maxPurchase = temp;//maxPurchase node is set to temp
+                    } 
+                
+                temp = temp.next;//moves temp to the next node
+            } 
+            //print the purchase name of the most expensive purchase in the list
+            System.out.printf("The most esxpensive purchase is: %s\n", maxPurchase.data.itemName);
+            return maxPurchase.data;//returns the purchase data of the most expensive purchase in the list
+        } 
+    }
+    
+    /**
+     * empties the list
+     */
+    public void makeEmpty(){
+        head = null;//head is set to null
+        length = 0;//length is set to 0
+    }
+    
+    /**
+     * returns the length of the list
+     * @return 
+     */
+    public int getLength(){
+        return length;
+    }
+    
+    /**
+     * makes a deep copy of the list
+     * @return 
+     */
+    public PurchaseList makeCopy(){
+        Node curr = new Node();//creates and initialize a node
+        Node last = new Node();//creates and initialize a node
+        PurchaseList temp = new PurchaseList();//creates and initialize a purchase lsit
+        temp.head = new Node();//initialize the head of the new list
+        curr = this.head;//sets curr to head
+        //will run until curr is null
+        while(curr != null){
+            //if temp.head.data is null
+            if(temp.head.data == null){
+                //deep copy the values of the curr.data to the new list
+                temp.head.data = new Purchase(curr.data.itemName, curr.data.quantity, curr.data.itemPrice);
+                last = temp.head;//sets last to temp.head
+            }
+            else{
+                last.next = new Node();//intiliaze last.next
+                last = last.next;//sets last to last.next 
+                //deep copy the values of the curr.data to the last (last.next)
+                last.data = new Purchase(curr.data.itemName, curr.data.quantity, curr.data.itemPrice);
+                last.next = null;//sets last.next to null
+            }
+            curr = curr.next;//moves curr to the next node
+            length++;//increments length
+        }
+        //prints the address of the copy list
+        System.out.printf("Purchase list copy made. The new list address is: %s\n", temp);
+        return temp;
+    }
+    
+    /**
+     * overrides the equals from object class
+     * @param obj , takes any instance from the object class
+     * @return  true if all the elements of the two instance have the same values
+     * and it returns false if they are not or if the obj instance is null, or not a PurchaseList instance,
+     * or if the obj.head is null
+     */
+    @Override
+    public boolean equals(Object obj) {
+        
+        boolean l = false; //a default boolean instance
+        Node temp = this.head;//temp is set to head
+        
+        //if obj is null it will return false
+        if (obj == null) return false; 
+        
+        //if obj is a PurchaseList instance
+        if (obj instanceof PurchaseList){
+            PurchaseList other = (PurchaseList) obj; //obj copy to PurchaseList instance
+            Node curr = other.head;//temp is set to other.head (obj.head)
+            //while temp is not null it will check all the purhases in it
+            while (temp != null){
+                //if curr (other.head) is null returns false
+                if(curr == null){return false;}
+                //use the override version of equals from the Purchase class and pass the value to the l instance
+                l = temp.data.equals(curr.data); 
+                //if l is false return false 
+                if(l == false){return false;}
+                curr = curr.next;//moves curr to the next node
+                temp = temp.next;//moves temp to the next node
+                }    
+            return l; //returns the value of l 
+        }
+        //if obj is not a PurchaseList instance returns false
+        else{
+            return false;
+        }
+    }
+}
