@@ -1,0 +1,233 @@
+/**
+ *
+ * @author Ana Salazar
+ * 
+ * The Purchase Queue class has an inner class called Node, two private node instance
+ * Its methods are: default constructor, copy constructor, an is empty method, a is full method, a make empty method, 
+ * enqueue method, dequeue method, get length method, make copy method,
+ * and an override of the equals method from the object base class
+ */
+public class PurchaseQueue {
+    //attibutes
+    private Node front;
+    private Node rear;
+     /**
+     * The Node class contains a purchase instance and a next Node instance
+     * the next instance points to the next node in the list
+     */
+    class Node {
+        Purchase pu;
+        Node next;
+    }
+    /**
+     * Default constructor that sets front and rear to null
+     */
+    public PurchaseQueue(){
+        front = null;
+        rear = null;
+    }
+    /**
+     * Copy constructor makes a deep copy of the passed instance to the new PurchaseQueue list instance
+     * it takes a PurchaseQueue parameter
+     * @param other queue
+     */
+    public PurchaseQueue(PurchaseQueue other){
+        //initialize front and rear
+        front = new Node();
+        rear = new Node();
+        //creates a curr(ent), last, and temp(orary) node and initialize them
+        Node curr = new Node();
+        Node last = new Node();
+        Node temp = other.front;//temp points to the instance other's front 
+        //while other's front is not empty
+        while (temp != null){
+            //if the curr purchase is null 
+            if(curr.pu == null){
+                //sets curr purchase to a new purchase with the values of the other's front purchase instance
+                curr.pu = new Purchase(temp.pu.itemName, temp.pu.quantity, temp.pu.itemPrice);
+                last = curr;
+                front = last;
+            }
+            //else if curr purchase is not null
+            else {
+                last.next = new Node();
+                last = last.next;
+                last.pu = new Purchase(temp.pu.itemName, temp.pu.quantity, temp.pu.itemPrice);
+                last.next = null;
+            }
+            //move temp to the next node
+            temp = temp.next;
+        }
+        rear = last;//sets rear to the last pruchase add
+        
+    }
+    /**
+     * checks if the  purchase queue list is empty and returns a boolean
+     * @return boolean
+     */
+    public boolean isEmpty(){
+        if (this.front == null)
+            return true;
+        return false;
+    }
+    /**
+     * checks if the purchase queue list is full and returns a boolean 
+     * @return boolean
+     */
+    public boolean isFull(){
+        Node location; //creates node instance 
+        //try and catch 
+        try {
+            //initialize location is it can be initilaize is not full
+            location = new Node();
+            location = null;
+            return false;
+        }
+        catch (OutOfMemoryError exeption) {
+            return true;
+        }
+    } 
+    /**
+     * empties the purchase queue list by setting front and rear to null
+     */
+    public void makeEmpty(){
+       front = null;
+       rear = null;
+    }
+    /**
+     * adds a new purchase to the queue
+     * @param g purchase
+     * @throws Exception if queue is full
+     */
+    public void enqueue(Purchase g)throws Exception {
+        //if it's full throws execption
+        if (isFull()){
+            throw new Exception("Full Stack");
+        }
+        else {
+            //creates temporary node and sets its purchase to the pruchase parameter
+            Node temp = new Node();
+            temp.pu = g;
+            temp.next = null;
+            //if queue is empty sets the front to temporary node
+            if(isEmpty()){
+                this.front = temp;
+                
+            }
+            else {//else rear's next is set to temporary node
+                this.rear.next = temp;
+            }
+            rear = temp;//rear is set to temporary node
+        }
+        System.out.println("Queue front: " + front.pu);
+        System.out.println("Queue rear: " + rear.pu);
+    }
+    /**
+     * removes a purchase from the queue
+     * @return purchase address
+     * @throws Exception if the queue is empty
+     */
+    public Purchase dequeue() throws Exception{
+        Purchase p;
+        //if queue is empty, return execption
+        if (isEmpty()){
+            throw new Exception("Empty Stack");
+        }
+        else {
+            //store previous front and move front one node ahead
+            Node temp = front;
+            p = front.pu;
+            front = front.next;
+            //if front becomes null, then change rear to null too
+            if (front == null){
+                rear = null;
+            }
+        }
+        System.out.println("Queue front: " + front.pu);
+        System.out.println("Queue rear: " + rear.pu);
+        return p;
+    }
+    /**
+     * gets the queue length
+     * @return the length integer
+     */
+    public int getLength(){
+        int length = 0;
+        Node temp = front;//temporary node is set to front
+        //if the queue is empty it returns "is empty"
+        if (isEmpty()){
+            System.out.println("Stack is empty");
+        }
+        //else it counts each node until it temporary is null and returns the count
+        else 
+            while (temp != null){
+                ++length;
+                temp = temp.next;
+            }
+            return length;
+    }
+    /**
+     * makes a copy of the queue
+     * @return the queue address
+     */
+    public PurchaseQueue makeCopy(){
+        //last node, temp node, and copy queue are initialize
+        Node last = new Node();
+        PurchaseQueue copy = new PurchaseQueue();
+        copy.front = new Node();
+        Node temp = this.front;
+        //while temp is not null it moves temp to next and copies a new purchase to the copy queue
+        while (temp != null){
+            //if the copy queue is null it it sets last to the copy queue front node
+            if(copy.front.pu == null){
+                copy.front.pu = new Purchase(temp.pu.itemName, temp.pu.quantity, temp.pu.itemPrice);
+                last = copy.front;
+            }
+            //else last next node is intialize it and last node is set to it, and its puchase is copy
+            else {
+                last.next = new Node();
+                last = last.next;
+                last.pu = new Purchase(temp.pu.itemName, temp.pu.quantity, temp.pu.itemPrice);
+                last.next = null;
+            }
+            temp = temp.next;
+        }
+        copy.rear = last;
+        return copy;
+    }
+    /**
+     * 
+     * overrides the equals from object class
+     * @param obj , takes any instance from the object class
+     * @return  true if all the elements of the two queue have the same values
+     * and it returns false if their values are not the same
+     * or if the obj instance is null or not a PurchaseQueue instance,
+     * or if the obj front node is null
+     */
+    @Override
+    public boolean equals(Object obj){
+        Node temp = this.front;
+        if (obj == null) return false;
+        
+        if (obj instanceof PurchaseQueue){
+            PurchaseQueue other = (PurchaseQueue) obj;//obj copy to purchase queue isntance
+            Node curr = other.front;
+            //while temp is not null it will check all the purhases in it
+            while(temp != null ){
+                //checks the two queues lengths are not the same
+                if(other.getLength() != this.getLength()) return false;
+                
+                if(curr == null) return false;
+                //use the override version of equals from the Purchase class 
+                if (temp.pu.equals(curr.pu) == false) return false;
+                //moves the nodes to their next node
+                temp = temp.next;
+                curr= curr.next;
+            }
+            return true;
+        }
+        else 
+            return false;
+    }
+    
+}
