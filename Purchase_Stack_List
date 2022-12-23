@@ -1,0 +1,211 @@
+/**
+ *
+ * @author Ana Salazar
+ * 
+ * The Purchase Stack class has an inner class called Node, a private node instance
+ * Its methods are: default constructor, copy constructor, an is empty method, a is full method, a make empty method, 
+ * push method, pop method, top method, get length method, make copy method,
+ * and an override of the equals method from the object base class
+ */
+public class PurchaseStack {
+    //attribute
+    private Node top;
+    /**
+     * contains a purchase instance and a next node instance
+     * the next instance points to the next node in the list
+     */
+    class Node {
+        Purchase p;
+        Node next;
+    }
+    /**
+     * default constructor sets top to null
+     */
+    public PurchaseStack(){
+        top = null;
+    }
+    /**
+     * copy constructor takes a purchase stack as its parameter and copies it 
+     * to the new stack
+     * @param other stack
+     */
+    public PurchaseStack(PurchaseStack other){
+        //temporary nodes
+        Node temp = new Node();
+        Node last = new Node();
+        Node tem = other.top;
+        //while the pass stack front is not empty it copies the purchase to the new stack
+        while (tem != null){
+            //if the the top node is null it copies the new purchase from the passed stack to last
+            if(temp.p == null){
+                temp.p = new Purchase(tem.p.itemName, tem.p.quantity, tem.p.itemPrice);
+                last = temp;
+            }
+            //else last next node is initiliazed and passed to last and its purchase is initialized and copy from the passed stack
+            else {
+                last.next = new Node();
+                last = last.next;
+                last.p = new Purchase(tem.p.itemName, tem.p.quantity, tem.p.itemPrice);
+                last.next = null;
+            }
+            //moves the passed stack front node to the next node
+            tem = tem.next;
+        }
+        top = temp;//sets top to temp
+    } 
+    
+    /**
+     * checks if the stack is empty
+     * @return boolean
+     */
+    public boolean isEmpty(){
+        if (top == null) return true;
+        else return false;
+    }
+    /**
+     * checks if the stacks is full
+     * @return 
+     */
+    public boolean isFull(){
+        Node location;
+        //try and catch block to see if a new node can be initialized
+        try {
+            location = new Node();
+            location = null;
+            return false;
+        }
+        catch(OutOfMemoryError ome){
+            return true;
+        }
+    }
+    /**
+     * adds purchase to the stack takes
+     * @param g  purchase
+     * @throws Exception if the stack is full
+     */
+    public void push(Purchase g) throws Exception {
+        if (isFull()){
+            throw new Exception("Full Stack");
+        }
+        //sets top node and top next node purchase to the passed purchase
+        Node temp;
+        temp = new Node();
+        temp.p = g;
+        temp.next = top;
+        top = temp;
+        
+    }
+    /**
+     * removes purchase from the stack
+     * @throws Exception if the stack is empty
+     */
+    public void pop() throws Exception {
+        if (isEmpty()){
+            throw new Exception("Empty Stack");
+        }
+        else {
+            //top node is set to the next node
+            Node temp;
+            temp = top;
+            top = top.next;
+        }
+    }
+    /**
+     * prints the purchase that is at the top
+     * @return purchase
+     * @throws Exception 
+     */
+    public Purchase top() throws Exception {
+        if(isEmpty()){
+            throw new Exception("Empty Stack");
+        }
+        System.out.println(top.p);
+        return top.p;
+    }
+    /**
+     * empties the stack
+     */
+    public void makeEmpty(){
+        top = null;
+    }
+    /**
+     * gets the stack length
+     * @return the stack length integer
+     */
+    public int getLength(){
+        int length = 0;
+        Node temp = top;
+        //if the stack is empty is prints is empty
+        if (isEmpty()){
+            System.out.println("Stack is empty");
+        }
+        else 
+            //counts the purchase on the stack 
+            while (temp != null){
+                ++length;
+                temp = temp.next;
+            }
+            return length;
+    }
+    /**
+     * makes a copy of the stack
+     * @return purchase stack address
+     */
+    public PurchaseStack makeCopy(){
+        //creates and initialized a copy stack and keeps track of the first(top) and last node
+        Node tem = new Node();
+        Node last = new Node();
+        PurchaseStack copy = new PurchaseStack();
+        copy.top = new Node();
+        tem = this.top;
+        //while top is not null it copies the purchases to the copy stack
+        while (tem != null){
+            //if the copy top node is null it sets the top purchase to the current top purchase 
+            if(copy.top.p == null){
+                copy.top.p = new Purchase(tem.p.itemName, tem.p.quantity, tem.p.itemPrice);
+                last = copy.top;
+            }
+            //else it copies the top purchase to the next current top purchase
+            else {
+                last.next = new Node();
+                last = last.next;
+                last.p = new Purchase(tem.p.itemName, tem.p.quantity, tem.p.itemPrice);
+                last.next = null;
+            }
+            tem = tem.next;
+        }
+       return copy; 
+    }
+    /**
+     * overrides the equals from object class
+     * @param obj , takes any instance from the object class
+     * @return  true if all the elements of the two stacks have the same values
+     * and it returns false if they are not or if the obj instance is null, 
+     * or not a PurchaseStack instance, or if the obj top node is null
+     * 
+     */
+    @Override
+    public boolean equals(Object obj) {
+        Node temp = this.top;
+        
+        if (obj == null) return false;
+        
+        if (obj instanceof PurchaseStack){
+            PurchaseStack other = (PurchaseStack) obj;
+            Node curr = other.top;
+            //while temp is not null it will check all the purhases in it
+            while(temp != null){
+                //checks if other front is null
+                if(curr == null) return false;
+                //uses the purchase equals to check the purchase values 
+                if (temp.p.equals(curr.p) == false) return false;
+                //moves the nodes to their next node
+                temp = temp.next;
+                curr= curr.next;
+            }
+            return true;
+        }
+        else 
+            return false;
+    }
+}
