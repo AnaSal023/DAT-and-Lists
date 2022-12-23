@@ -1,0 +1,149 @@
+import java.util.Arrays;
+
+/**
+ *
+ * @author Ana Salazar
+ * 
+ * The PurchaseCollection class has a Purchase array attribute
+ * it contains methods that two constructor methods to make a copy of the array,
+ * resize the array, get the length of it, get an element,
+ * and an override of the equals method from the object base class
+ * 
+ */
+public class PurchaseCollection {
+    //attribute array of purchase class with a set length 
+    private Purchase[] pr = new Purchase[3]; 
+    
+    /**
+     * default constructor that starts the elements in the pr array
+     */
+    public PurchaseCollection() {
+        //goes to the all array elements and initialize them
+        for(int i = 0; i < pr.length; i++){ 
+          pr[i] = new Purchase(); 
+        }
+    }
+    
+    /**
+     * constructor that deep copies the new instance to an already created one
+     * @param other, the PurchaseCollection instance from which is being copy
+     */
+    public PurchaseCollection(PurchaseCollection other) {
+        System.out.printf("\nPurchase Collection copy constructor called\n"); //prints a message to let know that the copy constructor was call
+        //goes through all the array elements and copies them from the other array to the new
+        for(int i = 0; i < other.pr.length; i++){ 
+            this.pr[i] = new Purchase(other.pr[i].itemName, other.pr[i].quantity, other.pr[i].itemPrice); 
+        }
+    }
+    
+    /**
+     * set method sets the value at the given index to the given Purchase instance
+     * if the index is not valid it returns a message and doesn't set the value
+     * @param index , an int instance  
+     * @param p , a purchase instance
+     */
+    public void set(int index, Purchase p){
+        //checks that the index of the array is valid and assigns p to the given index of the array 
+        if(index < pr.length){ 
+            this.pr[index] = p; 
+        }
+        //prints message to let know that the index does not exist
+        else { System.out.printf("\nThe given index does not exist.\n");} 
+    }
+    
+    /**
+     * get method, gets the element index of the arrays and returns it
+     * if the index is not valid it return null
+     * @param index , an int instance
+     * @return null or the purchase at the element index of the array 
+     */
+    public Purchase get(int index){
+        //checks if the index exists in the array and returns null if the index does not exist
+        if (index > pr.length){ 
+            return null; 
+        }
+        //returns the address and the elements values of the array at the given index
+        else { 
+            System.out.printf("\nItem: %2s", pr[index].itemName);
+            System.out.printf("\nQuantity: %2.0f", pr[index].quantity);
+            System.out.printf("\nPrice: %2.2f\n", pr[index].itemPrice);
+            return this.pr[index];
+        } 
+    }
+    
+    /**
+     * getSize method, gets the size of the array
+     * @return the size of array
+     */
+    public int getSize(){
+        return pr.length; //returns the size of the array
+    }
+    
+    /**
+     * makeCopy method, creates a new purchaseCollection instance and copies the elements 
+     * of the instance to the copy instance 
+     * @return the copy instance
+     */
+    public PurchaseCollection makeCopy() {
+        PurchaseCollection copy = new PurchaseCollection(); //creates a purchaseCollection instance and initialize it
+        //goes to all the elements of the array and copies them to the copy instance array's elements 
+        for(int i = 0; i < pr.length; i++){ 
+            copy.pr[i] = new Purchase(this.pr[i].itemName, this.pr[i].quantity, this.pr[i].itemPrice);
+        }
+        return copy;//returns the copy instance address
+    }
+    
+    /**
+     * resize method, creates a new purchase array and passed the new size to it,
+     * it copies the elements of the old array to the new array, and the elements that are not copy
+     * are initialize with a for loop
+     * @param newSize , takes in and int instance 
+     */
+    public void resize(int newSize){
+        Purchase[] np = new Purchase[newSize];//creates an array instance of purchase and passed the new size to it
+        //if the new array length is larger then it copies the elements of the old array and initialize the other elements 
+        if(np.length > pr.length) {
+            //lopp to copy all elements' values from the old array to new array
+            for(int i = 0; i < pr.length; i++){
+                np[i] = new Purchase(this.pr[i].itemName, this.pr[i].quantity, this.pr[i].itemPrice);
+            }
+            //initialize the other elements of the array
+            if(np.length > pr.length){
+                //initialize the elements of the array that are not copy from the old array    
+                for(int i = pr.length; i < newSize; i++){
+                    np[i] = new Purchase();
+                }
+            }
+        }
+        //if the array length is smaller it only copies the ones that the array can fit in
+        if(np.length < pr.length){
+            //loop to deep copy all the elements that the new array can fit in
+            for(int i = 0; i < np.length; i++){
+                np[i] = new Purchase(this.pr[i].itemName, this.pr[i].quantity, this.pr[i].itemPrice);
+            }
+        }
+        this.pr = np; //sets the previous array address to be the new array address
+    }
+    
+    /**
+     * overrides the equals from object class
+     * @param obj , takes any instance from the object class
+     * @return  true if all the elements of the two instance have the same values
+     * and it returns false if they are not or the object instance is null or not a PurchaseCollection instance
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean l = false; //a default boolean instance 
+        PurchaseCollection other = (PurchaseCollection) obj; //copy to PurchaseCollection instance
+        //if object is null or not equal to an instance of other from PurchaseCollection class it will return false
+        if (obj == null || obj != other) return false; 
+        //use the override version of equals from the Purchase class and pass the value to the l instance
+        if (pr.length == other.pr.length){
+            for (int i = 0; i < pr.length; i++){
+            l = pr[i].equals(other.pr[i]); 
+            }    
+            return l; //returns the value of l 
+        }
+        return false;
+    }
+}
