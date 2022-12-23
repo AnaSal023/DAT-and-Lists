@@ -1,0 +1,282 @@
+/**
+ *
+ * @author Ana Salazar
+ * The Purchase Binary Search Tree class has an inner class called Node, a private node instance
+ * Its methods are: default constructor, copy constructor, a copy helper method, get length method and its helper method, 
+ * make copy method, a clear method, an add method and its helper method, a pre-order, post-order, in-order method and their helper methods,
+ * a total cost method and its helper method, an override of the equals method from the object base class and its helper method
+ */
+public class PurchaseBinarySearchTree {
+    //instance
+    private Node root; 
+    /**
+     * The node class has three instances, a purchase one, and two node ones
+     */
+    class Node {
+        Purchase item;
+        Node left;
+        Node right;
+    }
+    /**
+     * default constructor that sets root to null
+     */
+    public PurchaseBinarySearchTree(){
+        root = null;
+    }
+    /**
+     * copy constructor makes a deep copy of the passed instance to the new PurchaseBinarySearchTree list instance
+     * it takes a PurchaseBinarySearchTree parameter
+     * @param other binary search tree 
+     */
+    public PurchaseBinarySearchTree(PurchaseBinarySearchTree other){
+        //if the parameter is empty it lets the user know
+        if (other == null){
+            System.out.println("The tree is empty");
+        }
+        //uses the helper method and sets the root to the return node of the parameter
+        this.root = PurchaseBinarySearchTree(other.root);
+    }
+    /**
+     * copy helper method of the copy method and make copy method
+     * @param tree node parameter
+     * @return a node instance
+     */
+    private Node PurchaseBinarySearchTree(Node tree){
+        //instance intialize it and its left and right nodes
+        Node temp = new Node();
+        temp.left = null;
+        temp.right = null;
+        Node curr = tree;
+        if (curr == null){//if the parameter root is null it returns null
+            return null;
+        }
+        //it initialize the purchase and copies them recursively starting left first then right
+        temp.item = new Purchase(curr.item.itemName, curr.item.quantity, curr.item.itemPrice);
+        temp.left = PurchaseBinarySearchTree(curr.left);
+        temp.right = PurchaseBinarySearchTree(curr.right);
+        return temp;//it returns the copy node
+    }
+    /**
+     * it clears the list
+     */
+    public void clear(){
+        root = null;
+    }
+    /**
+     * returns the length 
+     * @return int length of the list
+     */
+    public int getLength(){
+        return getLength(this.root);//uses the get length helper method
+    }
+    /**
+     * helper method of get length method 
+     * @param tree takes node parameter 
+     * @return returns an int
+     */
+    private int getLength(Node tree){
+        if (tree == null) {//when tree is null it returns 0
+            return 0;
+        }
+        else {//uses recursion to counts every purchase
+            return getLength(tree.left) + getLength(tree.right) + 1;
+        }
+    }
+    /**
+     * adds a purchase to the list
+     * @param g purchase parameter
+     */
+    public void add(Purchase g) {
+        root = add(this.root, g);//uses the add helper method
+    }
+    /**
+     * helper method, takes two parameters
+     * @param tree node
+     * @param g purchase
+     * @return a tree (node type)
+     */
+    private Node add(Node tree, Purchase g){
+        if (tree == null){
+            //if tree is empty it initialize a new node and sets the parameter purchase to its item
+            Node newPurchase = new Node();
+            newPurchase.item = g;
+            //sets the node left and right node to null
+            newPurchase.left = null;
+            newPurchase.right = null;
+            return newPurchase;
+        }
+        //compares the items' names of the current node to parameter purchase item name 
+        //it then uses recursion to check the nodes
+        if (g.itemName.compareTo(tree.item.itemName) < 0){//if it is less than it goes to the less node
+            tree.left = add(tree.left, g);
+        }
+        else if (g.itemName.compareTo(tree.item.itemName) > 0){//if it is greater than it goes to the right node
+            tree.right = add(tree.right, g);
+        }
+        return tree;//reuturns the node with the added purchase
+    }
+    /**
+     * pre-order methods prints the item names in pre order
+     */
+    public void preorder(){
+        preorder(root);//uses the helper method passing the root
+    }
+    /**
+     * helper method prints the item names of the list pre order of the root
+     * @param tree node
+     */
+    private void preorder(Node tree){
+        Node temp = tree;//passed the root to the a new node
+        //if the node is null it prints the item name, uses recursion to print the root, left, and right node item names
+        if (temp != null){
+            System.out.printf("Item name: %s\n", temp.item.itemName);
+            preorder(temp.left);
+            preorder(temp.right);
+        }
+    }
+    /**
+     * prints the item names in order
+     */
+    public void inorder(){
+        inorder(root);//uses the helper method passing the root
+    }
+    /**
+     * helper method to print the item names in order of the root
+     * @param tree node
+     */
+    private void inorder(Node tree){
+        Node temp = tree;//passed the root to the a new node
+        //if the node is null it prints the item name, uses recursion to print the left, then the root, and right node item names
+        if (temp != null){
+            inorder(temp.left);
+            System.out.printf("Item name: %s\n", temp.item.itemName);
+            inorder(temp.right);
+        }
+    }
+    /**
+     * prints the item names post order
+     */
+    public void postorder(){
+        postorder(root);//uses the helper method passing the root
+    }
+    /**
+     * helper method prints item names post order of the root
+     * @param tree node
+     */
+    private void postorder(Node tree){
+        Node temp = tree;//passed the root to the a new node
+        //if the node is null it prints the item name, then uses recursion to print the left and right node item names then the root item name
+        if (temp != null){
+            postorder(temp.left);
+            postorder(temp.right);
+            System.out.printf("Item name: %s\n", temp.item.itemName);
+        }
+    }
+    /**
+     * get the purchase by its item name
+     * @param itemName string
+     * @return the purchase with the same parameter item name 
+     */
+    public Purchase getPurchase(String itemName){
+        return getPurchase(this.root, itemName);//uses helper method passing the root and the parameter
+    }
+    /**
+     * helper method to get purchase by its item name
+     * @param tree node
+     * @param itemName string
+     * @return purchase
+     */
+    private Purchase getPurchase(Node tree, String itemName){
+        if (tree == null){//if the tree is null, it return its purchase
+            return tree.item;
+        }
+        //checks if the parameter item name is less than the item name in the tree
+        else if (itemName.compareTo(tree.item.itemName) < 0){
+            return getPurchase(tree.left, itemName);//uses recursion to go to the left node
+        }
+        //checks to see f the parameter item name is greater than the item name in the tree
+        else if (itemName.compareTo(tree.item.itemName) > 0){
+            return getPurchase(tree.right, itemName);//uses recursion to go to the right node
+        }
+        else {
+         return tree.item;//returns the puchase of the tree
+        }
+    }
+    /**
+     * 
+     * @return 
+     */
+    public double totalCostUsingRecursion(){
+        return totalCostUsingRecursion(this.root);
+    }
+    /**
+     * 
+     * @param tree
+     * @return 
+     */
+    private double totalCostUsingRecursion(Node tree){
+        double total = 0;
+        if (tree == null){
+            return 0;
+        }
+        total = tree.item.cost() + totalCostUsingRecursion(tree.left) + totalCostUsingRecursion(tree.right);
+        return total;
+    }
+    /**
+     * 
+     * @return 
+     */
+    public PurchaseBinarySearchTree makeCopy(){
+         PurchaseBinarySearchTree pt = new PurchaseBinarySearchTree();
+         pt.root = PurchaseBinarySearchTree(this.root);
+         return pt;
+    }
+    /**
+     * overrides the equals method from the object class
+     * it compares the purchase's item name of the list's node
+     * returns false if the lists are not the same, returns true if the lists are the same
+     * @param obj object 
+     * @return boolean
+     */
+    @Override
+    public boolean equals(Object obj){
+        Node temp = this.root;
+        if (obj == null) return false;//if the parameter if null it returns false
+        
+        if (obj instanceof PurchaseBinarySearchTree){//if the object is an instance of the purchase binary search tree
+            PurchaseBinarySearchTree other = (PurchaseBinarySearchTree) obj;//passed the parameter to a new purchase binary search tree 
+            Node curr = other.root;// passed the parameter root to a new node
+            //if the parameter length is not the same it returns false
+            if(other.getLength() != this.getLength()) return false;
+            if(curr == null) return false;//if the parameter root is null returns false
+            //uses helper method to check each node's purchase
+            if(equals(temp,curr) == true)
+                return true;
+        }
+        return false;//else it returns false
+    }
+    /**
+     * helper method of equals to compare two node's purchases
+     * @param tree node
+     * @param other node
+     * @return boolean
+     */
+    private boolean equals(Node tree, Node other){
+        //passed the nodes to method instance 
+        Node temp = tree;
+        Node curr = other;
+        //if both nodes are null returns true
+        if(temp == null && curr == null) {
+            return true;
+        } else if (temp != null && curr == null){//if one node is empty and the other is not it returns false
+            return false;
+        } else if (temp == null && curr != null){
+            return false;
+        }
+        //uses purchase equals to compare the purchases of both node
+        temp.item.equals(curr.item);
+        equals(temp.left, curr.left);//use recursion to compares the left nodes
+        equals(temp.right, curr.right);//use recursion to compares the right nodes
+        return true;//returns true if the nodes are equals
+    }
+}
