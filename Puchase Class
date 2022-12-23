@@ -1,0 +1,133 @@
+/**
+ *
+ * @author Ana Salazar
+ * 
+ * The Purchase class contains a string instance, and two double instances each instance has its sets and gets methods
+ * it contains three constructors, one just initialize the instance, the other one passed the given instance, and
+ * the last one copies a purchase instance to the new one
+ * there's a cost, a make copy method, and an override of the equals from the object base class
+ */
+public class Purchase {
+    //attributes
+    String itemName;
+    double quantity;
+    double itemPrice;
+
+    /**
+     * default constructor
+     * initialize all attributes
+     */
+    public Purchase() {
+        this.itemName = " ";
+        this.quantity = 0;
+        this.itemPrice = 0;
+    }
+    
+    /**
+     * constructor that takes all the variables as parameters
+     * @param itemN string instance 
+     * @param quantity  double instance
+     * @param itemP  double instance
+     */
+    public Purchase(String itemN, double quantity, double itemP){
+        //sets the parameters to the class attributes
+        this.itemName = itemN;
+        this.quantity = quantity;
+        this.itemPrice = itemP;
+    }
+    
+    /**
+     * deep copy constructor, copies all the instances of the parameter to the new created purchase instance
+     * @param other  purchase instance
+     */
+    public Purchase(Purchase other){
+        //prints a message to let know that the copy constructor was called
+        System.out.printf("\nPurchase copy constructor called\n");
+        //sets the instances from the parameter to the new purcahse instance
+        this.itemName = other.itemName;
+        this.quantity = other.quantity;
+        this.itemPrice = other.itemPrice;
+    }
+    
+    /**
+     * get item name and returns it
+     * @return item name
+     */
+    public String getItemName() {
+        return itemName;
+    }
+
+    /**
+     * get quantity and returns it
+     * @return quantity
+     */
+    public double getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * get item price and returns it
+     * @return item price
+     */
+    public double getItemPrice() {
+        return itemPrice;
+    }
+
+    /**
+     * sets item name 
+     * @param itemName  string instance
+     */
+    public void setItemName(String itemName) {
+        this.itemName = itemName; //sets the item name from the passed parameter
+    }
+
+    /**
+     * sets quantity
+     * @param quantity  double instance
+     */
+    public void setQuantity(double quantity) {
+        this.quantity = quantity; //sets the quantity from the passed parameter
+    }
+
+    /**
+     * sets item price
+     * @param itemPrice  double instance
+     */
+    public void setItemPrice(double itemPrice) {
+        this.itemPrice = itemPrice; //sets the item price from the passed parameter
+    }
+    
+    /**
+     * calculates the total cost of all items and returns the value
+     * @return the cost of the purchase
+     */
+    public double cost() {
+        return itemPrice * quantity; //returns a double
+    }
+    
+    /**
+     * makes a copy of a purchase instance and returns its address
+     * @return the copy address
+     */
+    public Purchase makeCopy(){
+        //creates a new purchase instance and passsed the instances 
+        Purchase copy = new Purchase(this.itemName, this.quantity, this.itemPrice);
+        return copy; // returns the copy instance address
+    }
+    
+    /**
+     * overrides the equals from object class
+     * @param obj  takes any instance from the object class
+     * @return  true if all the elements of the two instance have the same values
+     * and it returns false if they are not or the object instance is null or not a Purchase instance
+     */
+    @Override
+    public boolean equals(Object obj){
+        Purchase other = (Purchase) obj; // copy to Purchase variable
+        //if the object instance is null or not equal to an instance of other from Purchase class it will return false
+        if (obj == null || obj != other) return false; 
+        //returns true if all values are the same
+        return itemPrice == other.itemPrice && quantity == other.quantity && 
+                itemName.equals(other.itemName);
+    }
+}
